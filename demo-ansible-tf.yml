@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install Jenkins  (state=present)
+    apt:
+      name: jenkins
+      state: present
+
+    - name: Debug VM_ID
+    tags:
+      - debug
+    ansible.builtin.debug:
+      var: hostvars[inventory_hostname].VM_ID 
+
+  - name: Replace VM_ID in apache apache
+    ansible.builtin.replace:
+      path: /var/www/html/index.html
+      regexp: "%VM_ID%"
+      replace: "{{ item }}"
+    with_items:
+      - "{{ hostvars[inventory_hostname].VM_ID }}"
+...
